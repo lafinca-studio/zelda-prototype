@@ -26,4 +26,9 @@
   {
     return new PlayerGroundedState(_context, this);
   }
+
+  public PlayerBaseState Push()
+  {
+    return new PlayerPushState(_context, this);
+  }
 }

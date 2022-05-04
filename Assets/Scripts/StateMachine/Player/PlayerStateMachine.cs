@@ -11,11 +11,17 @@ public class PlayerStateMachine : MonoBehaviour
 
   int _isWalkingHash;
   int _isJumpingHash;
+  int _isPushingHash;
   bool _requireNewJumpPress = false;
   Vector2 _currentMovementInput;
   Vector3 _currentMovement;
   Vector3 _appliedMovement;
   bool _isMovementPressed;
+
+  bool _isPushPressed;
+
+  bool _isPushable;
+  
   float _rotationFactorPerFrame = 15f;
   float _groundedGravity = -0.05f;
   float _gravity = -9.8f;
@@ -37,7 +43,10 @@ public class PlayerStateMachine : MonoBehaviour
   public bool IsJumpPressed { get { return _isJumpPressed; } }
   public int IsJumpingHash { get { return _isJumpingHash; } }
   public int IsWalkingHash { get { return _isWalkingHash; } }
+  public int IsPushingHash { get { return _isPushingHash; } }
   public bool IsMovementPressed { get { return _isMovementPressed; } }
+  public bool IsPushPressed { get { return _isPushPressed; } }
+  public bool IsPushable { get { return _isPushable; } }
   public bool RequireNewJumpPress { get { return _requireNewJumpPress; } set { _requireNewJumpPress = value; } }
   public bool IsJumping { set { _isJumping = value; } }
   public bool IsJumpingPressed { get { return _isJumpPressed; } }
@@ -60,12 +69,15 @@ public class PlayerStateMachine : MonoBehaviour
 
     _isWalkingHash = Animator.StringToHash("isWalking");
     _isJumpingHash = Animator.StringToHash("isJumping");
+    _isPushingHash = Animator.StringToHash("isPushing");
 
     _playerInput.CharacterControls.Move.started += onMovementInput;
     _playerInput.CharacterControls.Move.canceled += onMovementInput;
     _playerInput.CharacterControls.Move.performed += onMovementInput;
     _playerInput.CharacterControls.Jump.started += onJump;
     _playerInput.CharacterControls.Jump.canceled += onJump;
+    _playerInput.CharacterControls.Push.started += onPush;
+    _playerInput.CharacterControls.Push.canceled += onPush;
 
     setupJumpVariables();
   }
@@ -117,6 +129,10 @@ public class PlayerStateMachine : MonoBehaviour
     _isMovementPressed = _currentMovementInput.x != 0 || _currentMovementInput.y != 0;
   }
 
+  void onPush(InputAction.CallbackContext context) {
+    _isPushPressed = context.ReadValueAsButton();
+  }
+
   private void OnEnable()
   {
     _playerInput.CharacterControls.Enable();
@@ -125,5 +141,17 @@ public class PlayerStateMachine : MonoBehaviour
   private void OnDisable()
   {
     _playerInput.CharacterControls.Disable();
+  }
+
+  private void OnTriggerEnter(Collider other) {
+    if (other.gameObject.CompareTag("Pushable")) {
+      _isPushable = true;
+    }
+  }
+
+  private void OnTriggerExit(Collider other) {
+    if (other.gameObject.CompareTag("Pushable")) {
+      _isPushable = false;
+    }
   }
 }

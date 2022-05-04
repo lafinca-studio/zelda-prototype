@@ -21,7 +21,6 @@ public class PlayerJumpState : PlayerBaseState
     if (Ctx.IsJumpPressed) {
       Ctx.RequireNewJumpPress = true;
     }
-
   }
 
   public override void StartSubState()

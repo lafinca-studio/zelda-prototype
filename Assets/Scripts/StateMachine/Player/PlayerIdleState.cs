@@ -29,5 +29,9 @@ public class PlayerIdleState : PlayerBaseState
     if (Ctx.IsMovementPressed) {
       SwitchState(Factory.Walk());
     }
+
+    if (Ctx.IsPushPressed && Ctx.IsPushable) {
+      SwitchState(Factory.Push());
+    }
   }
 }

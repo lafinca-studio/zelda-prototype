@@ -26,7 +26,7 @@ public class PlayerGroundedState : PlayerBaseState
   public override void StartSubState()
   {
     if (!Ctx.IsMovementPressed)
-    {
+    { 
       SetSubState(Factory.Idle());
     }
     else if (Ctx.IsMovementPressed)

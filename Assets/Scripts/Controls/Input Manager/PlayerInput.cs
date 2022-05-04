@@ -1,4 +1,4 @@
-// GENERATED AUTOMATICALLY FROM 'Assets/Input Manager/PlayerInput.inputactions'
+// GENERATED AUTOMATICALLY FROM 'Assets/Scripts/Controls/Input Manager/PlayerInput.inputactions'
 
 using System;
 using System.Collections;
@@ -43,7 +43,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Grab"",
+                    ""name"": ""Push"",
                     ""type"": ""Button"",
                     ""id"": ""190620a1-3bbc-4b98-8d34-f0bbfa3b16e8"",
                     ""expectedControlType"": ""Button"",
@@ -136,7 +136,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Grab"",
+                    ""action"": ""Push"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -150,7 +150,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         m_CharacterControls_Move = m_CharacterControls.FindAction("Move", throwIfNotFound: true);
         m_CharacterControls_Jump = m_CharacterControls.FindAction("Jump", throwIfNotFound: true);
         m_CharacterControls_Crouch = m_CharacterControls.FindAction("Crouch", throwIfNotFound: true);
-        m_CharacterControls_Grab = m_CharacterControls.FindAction("Grab", throwIfNotFound: true);
+        m_CharacterControls_Push = m_CharacterControls.FindAction("Push", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -203,7 +203,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
     private readonly InputAction m_CharacterControls_Move;
     private readonly InputAction m_CharacterControls_Jump;
     private readonly InputAction m_CharacterControls_Crouch;
-    private readonly InputAction m_CharacterControls_Grab;
+    private readonly InputAction m_CharacterControls_Push;
     public struct CharacterControlsActions
     {
         private @PlayerInput m_Wrapper;
@@ -211,7 +211,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         public InputAction @Move => m_Wrapper.m_CharacterControls_Move;
         public InputAction @Jump => m_Wrapper.m_CharacterControls_Jump;
         public InputAction @Crouch => m_Wrapper.m_CharacterControls_Crouch;
-        public InputAction @Grab => m_Wrapper.m_CharacterControls_Grab;
+        public InputAction @Push => m_Wrapper.m_CharacterControls_Push;
         public InputActionMap Get() { return m_Wrapper.m_CharacterControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -230,9 +230,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @Crouch.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnCrouch;
                 @Crouch.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnCrouch;
                 @Crouch.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnCrouch;
-                @Grab.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnGrab;
-                @Grab.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnGrab;
-                @Grab.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnGrab;
+                @Push.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnPush;
+                @Push.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnPush;
+                @Push.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnPush;
             }
             m_Wrapper.m_CharacterControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -246,9 +246,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @Crouch.started += instance.OnCrouch;
                 @Crouch.performed += instance.OnCrouch;
                 @Crouch.canceled += instance.OnCrouch;
-                @Grab.started += instance.OnGrab;
-                @Grab.performed += instance.OnGrab;
-                @Grab.canceled += instance.OnGrab;
+                @Push.started += instance.OnPush;
+                @Push.performed += instance.OnPush;
+                @Push.canceled += instance.OnPush;
             }
         }
     }
@@ -258,6 +258,6 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
-        void OnGrab(InputAction.CallbackContext context);
+        void OnPush(InputAction.CallbackContext context);
     }
 }
