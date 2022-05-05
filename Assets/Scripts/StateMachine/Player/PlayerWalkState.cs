@@ -11,23 +11,30 @@ public class PlayerWalkState : PlayerBaseState
   }
   public override void Tick()
   {
-    CheckSwitchState();
     Ctx.AppliedMovementX = Ctx.CurrentMovementInput.x;
     Ctx.AppliedMovementZ = Ctx.CurrentMovementInput.y;
+    CheckSwitchState();
+  }
+
+  public override void CheckSwitchState()
+  {
+    if (!Ctx.IsMovementPressed)
+    {
+      SwitchState(Factory.Idle());
+    }
+
+    if (Ctx.IsCrouchPressed && Ctx.IsMovementPressed) {
+      SwitchState(Factory.CrouchWalk());
+    }
   }
   public override void Exit()
   {
-
+    Ctx.Animator.SetBool(Ctx.IsWalkingHash, false);
   }
 
   public override void StartSubState()
   {
 
   }
-  public override void CheckSwitchState()
-  {
-    if (!Ctx.IsMovementPressed) {
-      SwitchState(Factory.Idle());
-    }
-  }
+
 }

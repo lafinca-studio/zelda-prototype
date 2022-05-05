@@ -5,13 +5,9 @@ using UnityEngine;
 public class PushBox : MonoBehaviour
 {
 
-  private float _pushForce;
+  public float _pushForce;
 
-  public float PushForce { get { return _pushForce; } set { _pushForce = value; } }
-
-
-  private void OnControllerColliderHit(ControllerColliderHit hit)
-  {
+  private void OnCollisionStay(Collision hit) {    
     Rigidbody rigidbody = hit.collider.attachedRigidbody;
 
     if (rigidbody != null)

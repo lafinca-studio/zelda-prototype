@@ -9,9 +9,13 @@ public class PlayerStateMachine : MonoBehaviour
   CharacterController _characterController;
   Animator _animator;
 
+  PushBox[] pushArms;
+
   int _isWalkingHash;
   int _isJumpingHash;
   int _isPushingHash;
+  int _isCrouchingHash;
+  int _isCrouchingWalkingHash;
   bool _requireNewJumpPress = false;
   Vector2 _currentMovementInput;
   Vector3 _currentMovement;
@@ -21,7 +25,10 @@ public class PlayerStateMachine : MonoBehaviour
   bool _isPushPressed;
 
   bool _isPushable;
-  
+  bool _isPushing;
+  bool _isCrouchPressed;
+
+
   float _rotationFactorPerFrame = 15f;
   float _groundedGravity = -0.05f;
   float _gravity = -9.8f;
@@ -44,9 +51,15 @@ public class PlayerStateMachine : MonoBehaviour
   public int IsJumpingHash { get { return _isJumpingHash; } }
   public int IsWalkingHash { get { return _isWalkingHash; } }
   public int IsPushingHash { get { return _isPushingHash; } }
+  public int IsCrouchingHash { get { return _isCrouchingHash; } }
+  public int IsCrouchingWalkingHash { get { return _isCrouchingWalkingHash; } }
   public bool IsMovementPressed { get { return _isMovementPressed; } }
+  public bool IsCrouchPressed { get { return _isCrouchPressed; } }
   public bool IsPushPressed { get { return _isPushPressed; } }
+  public bool IsPushing { get { return _isPushing; } set { _isPushing = value; } }
   public bool IsPushable { get { return _isPushable; } }
+
+  public PushBox[] PushForce { get { return pushArms; } set { pushArms = value; } }
   public bool RequireNewJumpPress { get { return _requireNewJumpPress; } set { _requireNewJumpPress = value; } }
   public bool IsJumping { set { _isJumping = value; } }
   public bool IsJumpingPressed { get { return _isJumpPressed; } }
@@ -56,6 +69,7 @@ public class PlayerStateMachine : MonoBehaviour
   public float AppliedMovementY { get { return _appliedMovement.y; } set { _appliedMovement.y = value; } }
   public float AppliedMovementX { get { return _appliedMovement.x; } set { _appliedMovement.x = value; } }
   public float AppliedMovementZ { get { return _appliedMovement.z; } set { _appliedMovement.z = value; } }
+
 
   void Awake()
   {
@@ -70,6 +84,8 @@ public class PlayerStateMachine : MonoBehaviour
     _isWalkingHash = Animator.StringToHash("isWalking");
     _isJumpingHash = Animator.StringToHash("isJumping");
     _isPushingHash = Animator.StringToHash("isPushing");
+    _isCrouchingHash = Animator.StringToHash("isCrouching");
+    _isCrouchingWalkingHash = Animator.StringToHash("isCrouchingWalking");
 
     _playerInput.CharacterControls.Move.started += onMovementInput;
     _playerInput.CharacterControls.Move.canceled += onMovementInput;
@@ -78,6 +94,14 @@ public class PlayerStateMachine : MonoBehaviour
     _playerInput.CharacterControls.Jump.canceled += onJump;
     _playerInput.CharacterControls.Push.started += onPush;
     _playerInput.CharacterControls.Push.canceled += onPush;
+    _playerInput.CharacterControls.Crouch.started += onCrouch;
+    _playerInput.CharacterControls.Crouch.canceled += onCrouch;
+
+    pushArms = GetComponentsInChildren<PushBox>();
+    foreach (PushBox arm in pushArms)
+    {
+      arm._pushForce = 0;
+    }
 
     setupJumpVariables();
   }
@@ -129,8 +153,14 @@ public class PlayerStateMachine : MonoBehaviour
     _isMovementPressed = _currentMovementInput.x != 0 || _currentMovementInput.y != 0;
   }
 
-  void onPush(InputAction.CallbackContext context) {
+  void onPush(InputAction.CallbackContext context)
+  {
     _isPushPressed = context.ReadValueAsButton();
+  }
+
+  void onCrouch(InputAction.CallbackContext context)
+  {
+    _isCrouchPressed = context.ReadValueAsButton();
   }
 
   private void OnEnable()
@@ -143,14 +173,18 @@ public class PlayerStateMachine : MonoBehaviour
     _playerInput.CharacterControls.Disable();
   }
 
-  private void OnTriggerEnter(Collider other) {
-    if (other.gameObject.CompareTag("Pushable")) {
+  private void OnTriggerEnter(Collider other)
+  {
+    if (other.gameObject.CompareTag("Pushable"))
+    {
       _isPushable = true;
     }
   }
 
-  private void OnTriggerExit(Collider other) {
-    if (other.gameObject.CompareTag("Pushable")) {
+  private void OnTriggerExit(Collider other)
+  {
+    if (other.gameObject.CompareTag("Pushable"))
+    {
       _isPushable = false;
     }
   }

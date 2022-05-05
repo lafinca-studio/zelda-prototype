@@ -33,5 +33,9 @@ public class PlayerIdleState : PlayerBaseState
     if (Ctx.IsPushPressed && Ctx.IsPushable) {
       SwitchState(Factory.Push());
     }
+
+    if (Ctx.IsCrouchPressed) {
+      SwitchState(Factory.Crouch());
+    }
   }
 }

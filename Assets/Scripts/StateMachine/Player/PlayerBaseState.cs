@@ -47,6 +47,7 @@
       _currentSuperState.SetSubState(newState);
     }
   }
+
   protected void SetSuperState(PlayerBaseState newSuperState)
   {
     _currentSuperState = newSuperState;

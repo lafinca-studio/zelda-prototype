@@ -4,29 +4,21 @@ using UnityEngine;
 
 public class PlayerJumpState : PlayerBaseState
 {
-  public PlayerJumpState(PlayerStateMachine currentContext, PlayerStateFactory playerStateFactory) : base(currentContext, playerStateFactory) { }
-  public override void Enter()
+  public PlayerJumpState(PlayerStateMachine currentContext, PlayerStateFactory playerStateFactory) : base(currentContext, playerStateFactory)
   {
     IsRootState = true;
+  }
+  public override void Enter()
+  {
+    StartSubState();
     handleJump();
   }
   public override void Tick()
   {
-    CheckSwitchState();
     handleGravity();
-  }
-  public override void Exit()
-  {
-    Ctx.Animator.SetBool(Ctx.IsJumpingHash, false);
-    if (Ctx.IsJumpPressed) {
-      Ctx.RequireNewJumpPress = true;
-    }
+    CheckSwitchState();
   }
 
-  public override void StartSubState()
-  {
-
-  }
   public override void CheckSwitchState()
   {
     if (Ctx.CharacterController.isGrounded)
@@ -34,6 +26,33 @@ public class PlayerJumpState : PlayerBaseState
       SwitchState(Factory.Grounded());
     }
   }
+
+  public override void Exit()
+  {
+    Ctx.Animator.SetBool(Ctx.IsJumpingHash, false);
+    if (Ctx.IsJumpPressed)
+    {
+      Ctx.RequireNewJumpPress = true;
+    }
+    Ctx.IsJumping = false;
+  }
+
+  public override void StartSubState()
+  {
+    if (!Ctx.IsMovementPressed && !Ctx.IsCrouchPressed)
+    {
+      SetSubState(Factory.Idle());
+    }
+    else if (Ctx.IsMovementPressed && !Ctx.IsCrouchPressed)
+    {
+      SetSubState(Factory.Walk());
+    }
+    else if (Ctx.IsCrouchPressed)
+    {
+      SetSubState(Factory.Crouch());
+    }
+  }
+
 
   void handleJump()
   {
@@ -52,7 +71,9 @@ public class PlayerJumpState : PlayerBaseState
       float previousYVelocity = Ctx.CurrentMovementY;
       Ctx.CurrentMovementY = Ctx.CurrentMovementY + (Ctx.Gravity * fallMultiplier * Time.deltaTime);
       Ctx.AppliedMovementY = Mathf.Max((previousYVelocity + Ctx.CurrentMovementY) * 0.5f, -10f);
-    } else {
+    }
+    else
+    {
       float previousYVelocity = Ctx.CurrentMovementY;
       Ctx.CurrentMovementY = Ctx.CurrentMovementY + (Ctx.Gravity * Time.deltaTime);
       Ctx.AppliedMovementY = (previousYVelocity + Ctx.CurrentMovementY) * 0.5f;
