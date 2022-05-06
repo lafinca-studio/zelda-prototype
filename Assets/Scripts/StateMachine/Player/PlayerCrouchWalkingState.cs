@@ -13,6 +13,8 @@ public class PlayerCrouchWalkingState : PlayerBaseState
     Ctx.Animator.SetBool(Ctx.IsCrouchingHash, true);
     Ctx.Animator.SetBool(Ctx.IsWalkingHash, true);
     Ctx.Animator.SetBool(Ctx.IsCrouchingWalkingHash, true);
+    Ctx.CharacterController.height = 0.5f;
+    Ctx.CharacterController.center = new Vector3(0, 0.3f, 0);
   }
 
   public override void Tick()
@@ -45,6 +47,8 @@ public class PlayerCrouchWalkingState : PlayerBaseState
     Ctx.Animator.SetBool(Ctx.IsCrouchingWalkingHash, false);
     Ctx.Animator.SetBool(Ctx.IsCrouchingHash, false);
     Ctx.Animator.SetBool(Ctx.IsWalkingHash, false);
+    Ctx.CharacterController.height = 1.6f;
+    Ctx.CharacterController.center = new Vector3(0, 0.8f, 0);
   }
 
   public override void StartSubState()
